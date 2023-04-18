@@ -7,7 +7,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
-# import allure kell?
 
 
 from adatok import user, article
@@ -181,7 +180,7 @@ class TestConduit(object):
         article_title = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
         article_about = self.browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
-        article_text = self.browser.find_elements(By.XPATH,
+        article_words = self.browser.find_elements(By.XPATH,
                                                   '//textarea[@placeholder="Write your article (in markdown)"]')
         article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
@@ -189,7 +188,7 @@ class TestConduit(object):
 
         article_title.send_keys(article["title"])
         article_about.send_keys(article["about"])
-        article_text.send_keys(article["text"])
+        article_words.send_keys(article["words"])
         article_tags.send_keys(article["tags"])
         publish_article_btn.click()
         time.sleep(2)
@@ -220,7 +219,7 @@ class TestConduit(object):
         # az újonnan felvitt cikk címeit összehasonlítom a megjelent új címekkel:
 
         new_article_title = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.XPATH, '//h1')))
-        assert new_article_title.text == articles_list.text
+        assert new_article_title.text == articles_list.text  # == row[0]
 
 
 
