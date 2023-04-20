@@ -18,7 +18,7 @@ class TestConduit(object):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         self.browser = webdriver.Chrome(service=service, options=options)
@@ -44,14 +44,17 @@ class TestConduit(object):
         assert cookie_panel.is_displayed()
         assert decline_btn.is_enabled()
         assert accept_btn.is_enabled()
+        assert accept_btn.text == 'I accept!'
 
         # kattintás után a gombok, panel eltűnésének ellenőrzése:
 
         accept_btn.click()
         time.sleep(2)
-        # assert not cookie_panel.is_displayed() nem fut le
+
+        # assert not cookie_panel.is_displayed()
         # assert not accept_btn.is_displayed()
         assert len(self.browser.find_elements(By.ID, 'cookie-policy-panel')) == 0
+        # assert not self.browser.find_element(By.ID, 'cookie-policy-panel').is_displayed()
 
     # 2. Regisztráció folyamata helyes adatokkal:
     def test_registration(self):
@@ -180,11 +183,10 @@ class TestConduit(object):
         article_title = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
         article_about = self.browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
-        article_words = self.browser.find_elements(By.XPATH,
+        article_words = self.browser.find_element(By.XPATH,
                                                   '//textarea[@placeholder="Write your article (in markdown)"]')
         article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
-        time.sleep(2)
 
         article_title.send_keys(article["title"])
         article_about.send_keys(article["about"])
@@ -202,24 +204,28 @@ class TestConduit(object):
     def test_file_data(self):
         # külső adatforrásból adatfeltöltés, csv file megnyitása, soronkénti beolvasása:
 
-        time.sleep(2)
         login(self.browser)
+        time.sleep(2)
 
-        with open('test_vizsgaremek_conduit_CSK/cimek.csv', 'r', encoding='UTF-8') as file:
+        with open('cimek.csv', 'r', encoding='UTF-8') as file:  # test_vizsgaremek_conduit_CSK/.... mi a jó elérési út ide?
             csv_reader = csv.reader(file, delimiter=',')
-
-            articles_list = []
-
+            next(csv_reader)
             for row in csv_reader:
                 new_article(self.browser, row[0], row[1], row[2], row[3])
-                articles_list.append(row[0])
+                new_article_title = self.browser.find_element(By.XPATH, '//h1')
+                assert new_article_title.text == row[0]
+
+
+
+                #articles_list = []
+                #articles_list.append(row[0])
 
         time.sleep(2)
 
         # az újonnan felvitt cikk címeit összehasonlítom a megjelent új címekkel:
 
         new_article_title = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.XPATH, '//h1')))
-        assert new_article_title.text == articles_list.text  # == row[0]
+        # assert new_article_title.text == articles_list.text  # == row[0]
 
 
 
