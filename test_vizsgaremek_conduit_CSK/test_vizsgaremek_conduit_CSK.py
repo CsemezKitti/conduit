@@ -18,7 +18,7 @@ class TestConduit(object):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         self.browser = webdriver.Chrome(service=service, options=options)
@@ -215,7 +215,7 @@ class TestConduit(object):
 
         # külső adatforrásból adatfeltöltés, csv file megnyitása, soronkénti beolvasása:
 
-        with open('cimek.csv', 'r', encoding='UTF-8') as file:  # test_vizsgaremek_conduit_CSK/....
+        with open('test_vizsgaremek_conduit_CSK/cimek.csv', 'r', encoding='UTF-8') as file:  # test_vizsgaremek_conduit_CSK/....
             csv_reader = csv.reader(file, delimiter=',')
             next(csv_reader)
 
@@ -301,13 +301,13 @@ class TestConduit(object):
         # gombok megkeresése, adat mentése, visszatöltése olvasásra:
 
         popular_tags = self.browser.find_elements(By.XPATH, '//a[@class="tag-pill tag-default"]')
-        with open('mentett_adatok.csv', 'w', encoding="UTF-8") as file:
+        with open('test_vizsgaremek_conduit_CSK/mentett_adatok.csv', 'w', encoding="UTF-8") as file:
             for tag in popular_tags:
                 file.write(tag.text)
                 file.write("\n")
 
         tag_list = []
-        with open('mentett_adatok.csv', 'r', encoding="UTF-8") as file_read:
+        with open('test_vizsgaremek_conduit_CSK/mentett_adatok.csv', 'r', encoding="UTF-8") as file_read:
             csv_reader = csv.reader(file_read, delimiter=',')
             for tag in csv_reader:
                 tag_list.append(tag)
