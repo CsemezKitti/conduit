@@ -18,7 +18,7 @@ class TestConduit(object):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         self.browser = webdriver.Chrome(service=service, options=options)
@@ -175,6 +175,7 @@ class TestConduit(object):
 
         new_article_btn = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
+        time.sleep(4)
         new_article_btn.click()
         time.sleep(4)
 
@@ -184,19 +185,27 @@ class TestConduit(object):
         article_words = self.browser.find_element(By.XPATH,
                                                   '//textarea[@placeholder="Write your article (in markdown)"]')
         article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
-        publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
 
+
+        time.sleep(4)
         article_title.send_keys(article["title"])
+        time.sleep(4)
         article_about.send_keys(article["about"])
+        time.sleep(4)
         article_words.send_keys(article["words"])
+        time.sleep(4)
         article_tags.send_keys(article["tags"])
 
         time.sleep(4)
+        publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
+        time.sleep(4)
         publish_article_btn.click()
+        time.sleep(4)
 
         # annak ellenőrzése, hogy a felvitt cikk adatai sikeresen elmentődtek - a cikk címe megegyezik a dictionary-ben szereplő címmel:
 
         new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
+        time.sleep(4)
         assert new_title.text == article["title"]
 
     # 7. Ismételt és sorozatos adatbevitel ellenőrzése adatforrásból:
@@ -230,24 +239,25 @@ class TestConduit(object):
 
         new_article(self.browser, article["title"], article["about"], article["words"],
                     article["tags"])  # adatok meghívása
-        time.sleep(2)
+        time.sleep(4)
 
         edit_btn = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//a[@class="btn btn-sm btn-outline-secondary"]')))
         edit_btn.click()
-        time.sleep(2)
+        time.sleep(4)
         article_title = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
         time.sleep(2)
 
         article_title.clear()
-        time.sleep(2)
+        time.sleep(4)
         article_title.send_keys(update_article["title"])
         time.sleep(2)
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
 
+        time.sleep(4)
         publish_article_btn.click()
-        time.sleep(2)
+        time.sleep(4)
 
         # annak ellenőrzése, hogy a módosított cím megegyezik az adatokból felvitt eredeti címmel:
 
