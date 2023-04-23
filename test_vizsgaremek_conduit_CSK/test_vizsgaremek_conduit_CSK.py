@@ -5,7 +5,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-import allure
 import time
 import csv
 
@@ -30,11 +29,10 @@ class TestConduit(object):
     def teardown_method(self):
         self.browser.quit()
 
-    @allure.title('1. Adatkezelési nyilatkozat elfogadásának ellenőrzése:')
-    @allure.description('''gombok megkeresése, ellenőrzése:''')
-    @allure.description('''kattintás után a panel eltűnésének ellenőrzése:''')
-
+    # 1. Adatkezelési nyilatkozat elfogadásának ellenőrzése:
     def test_cookies(self):
+
+        # gombok megkeresése, ellenőrzése:
 
         time.sleep(2)
         decline_btn = self.browser.find_element(By.XPATH,
@@ -49,7 +47,7 @@ class TestConduit(object):
         assert accept_btn.is_enabled()
         assert accept_btn.text == 'I accept!'
 
-
+        # kattintás után a panel eltűnésének ellenőrzése:
 
         accept_btn.click()
         time.sleep(2)
