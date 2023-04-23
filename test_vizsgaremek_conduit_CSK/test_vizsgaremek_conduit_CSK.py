@@ -31,9 +31,10 @@ class TestConduit(object):
         self.browser.quit()
 
     @allure.title('1. Adatkezelési nyilatkozat elfogadásának ellenőrzése:')
-    def test_cookies(self):
+    @allure.description('''gombok megkeresése, ellenőrzése:''')
+    @allure.description('''kattintás után a panel eltűnésének ellenőrzése:''')
 
-        @allure.description('''gombok megkeresése, ellenőrzése:''')
+    def test_cookies(self):
 
         time.sleep(2)
         decline_btn = self.browser.find_element(By.XPATH,
@@ -48,7 +49,7 @@ class TestConduit(object):
         assert accept_btn.is_enabled()
         assert accept_btn.text == 'I accept!'
 
-        @allure.description('''kattintás után a panel eltűnésének ellenőrzése:''')
+
 
         accept_btn.click()
         time.sleep(2)
