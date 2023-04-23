@@ -39,10 +39,3 @@ def new_article(browser, article, about, text, tags):
     article_text.send_keys(text)
     article_tags.send_keys(tags)
     publish_article_btn.click()
-
-def cookies(browser):
-    time.sleep(2)
-    accept_btn = browser.find_element(By.XPATH,
-                                               '//button[@class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')
-    accept_btn.click()
-    time.sleep(2)
