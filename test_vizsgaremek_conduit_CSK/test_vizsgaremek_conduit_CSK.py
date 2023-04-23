@@ -252,16 +252,17 @@ class TestConduit(object):
         article_title.clear()
         time.sleep(4)
         article_title.send_keys(update_article["title"])
-        time.sleep(2)
+        time.sleep(4)
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
 
         time.sleep(4)
         publish_article_btn.click()
-        time.sleep(4)
+        time.sleep(6)
 
         # annak ellenőrzése, hogy a módosított cím megegyezik az adatokból felvitt eredeti címmel:
 
         new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
+        time.sleep(2)
         assert new_title.text == update_article["title"]
 
     # 9. Adat törlésének ellenőrzése:
