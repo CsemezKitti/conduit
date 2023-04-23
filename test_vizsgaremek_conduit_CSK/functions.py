@@ -21,21 +21,28 @@ def login(browser):
     sign_in_btn2.click()
     time.sleep(2)
 
-# cikk módosításhoz...
+# cikk módosításhoz:
 
-def new_article(browser):
+def new_article(browser, article, about, text, tags):
     new_article_btn = browser.find_element(By.XPATH, '//a[@href="#/editor"]')
     new_article_btn.click()
 
     article_title = WebDriverWait(browser, 2).until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
     article_about = browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
-    article_text = browser.find_elements(By.XPATH,
+    article_text = browser.find_element(By.XPATH,
                                               '//textarea[@placeholder="Write your article (in markdown)"]')
     article_tags = browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
     publish_article_btn = browser.find_element(By.XPATH, '//button[@type="submit"]')
 
-    article_title.send_keys(article["title"])
-    article_about.send_keys(article["about"])
-    article_text.send_keys(article["text"])
-    article_tags.send_keys(article["tags"])
+    article_title.send_keys(article)
+    article_about.send_keys(about)
+    article_text.send_keys(text)
+    article_tags.send_keys(tags)
     publish_article_btn.click()
+
+def cookies(browser):
+    time.sleep(2)
+    accept_btn = browser.find_element(By.XPATH,
+                                               '//button[@class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')
+    accept_btn.click()
+    time.sleep(2)

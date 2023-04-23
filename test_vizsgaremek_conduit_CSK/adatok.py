@@ -12,6 +12,18 @@ article = {
         "tags": "SV"
 }
 
-tags = {
-        "tag": "mitast"
+update_article = {
+
+        "title": "Módosított program",
+        "about": "Módosított képzések",
+        "words": "Módosított részletek",
+        "tags": "SVSV"
+}
+
+delete_article = {
+
+        "title": "remove",
+        "about": "remove",
+        "words": "remove",
+        "tags": "remove"
 }

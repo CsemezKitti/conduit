@@ -9,7 +9,7 @@ import time
 import csv
 
 
-from adatok import user, article
+from adatok import user, article, update_article, delete_article
 from functions import login, new_article
 
 # Böngésző és az adott oldal megnyitása, bezárása:
@@ -26,8 +26,8 @@ class TestConduit(object):
         self.browser.get(URL)
         self.browser.maximize_window()
 
-    def teardown_method(self):
-        self.browser.quit()
+#    def teardown_method(self):
+#        self.browser.quit()
 
     # 1. Adatkezelési nyilatkozat elfogadásának ellenőrzése:
     def test_cookies(self):
@@ -212,6 +212,7 @@ class TestConduit(object):
             next(csv_reader)
             for row in csv_reader:
                 new_article(self.browser, row[0], row[1], row[2], row[3])
+                time.sleep(1)
                 new_article_title = self.browser.find_element(By.XPATH, '//h1')
                 assert new_article_title.text == row[0]
 
@@ -220,11 +221,11 @@ class TestConduit(object):
                 #articles_list = []
                 #articles_list.append(row[0])
 
-        time.sleep(2)
+        # time.sleep(2)
 
         # az újonnan felvitt cikk címeit összehasonlítom a megjelent új címekkel:
 
-        new_article_title = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.XPATH, '//h1')))
+        # new_article_title = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.XPATH, '//h1')))
         # assert new_article_title.text == articles_list.text  # == row[0]
 
 
@@ -236,61 +237,82 @@ class TestConduit(object):
         time.sleep(2)
         login(self.browser)
         time.sleep(2)
-        new_article(self.browser)
+        new_article(self.browser, article["title"], article["about"], article["words"], article["tags"]) # adatok meghívása
+        time.sleep(2)
 
         edit_btn = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//a[@class="btn btn-sm btn-outline-secondary"]')))
         edit_btn.click()
+        time.sleep(2)
         article_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
         time.sleep(2)
-# van ilyen?
+
         article_title.clear()
-        article_title.send_keys(article["title"])  # [2]  dictionary-ből kéne?
+        time.sleep(2)
+        article_title.send_keys(update_article["title"])
+        time.sleep(2)
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
 
         publish_article_btn.click()
         time.sleep(2)
 
-        # annak ellenőrzése, hogy a módosított megegyezik az adatokból felvitt címmel:
+        # annak ellenőrzése, hogy a módosított cím megegyezik az adatokból felvitt eredeti címmel:
 
         new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
-        assert new_title.text == article["title"].text  # [2]?
+        assert new_title.text == update_article["title"]
 
     # 9. Adat törlésének ellenőrzése:
     def test_delete_data(self):
-        # gombok megkeresése,
+        # gombok, mezők megkeresése, cikk törlése:
 
         time.sleep(2)
         login(self.browser)
         time.sleep(2)
-        new_article(self.browser)
+        new_article(self.browser, delete_article['title'], delete_article['about'], delete_article['words'], delete_article['tags']) # adatok meghívása
         time.sleep(2)
 
         delete_btn = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//button[@class="btn btn-outline-danger btn-sm"]')))
         delete_btn.click()
         time.sleep(2)
 
-# adott usernek a neve az adatok-ból, milyen zárójel kell? href="#/@{'name'}/"??
-        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@class="nav-link"]')[4]
+        profile_name_btn = self.browser.find_elements(By.XPATH, '//a[@class="nav-link"]')[4]
         profile_name_btn.click()
         time.sleep(2)
 
-        article_list = self.browser.find_element(By.XPATH, '//a[@class="router-link-exact-active active"]')
-        assert article_list.text != article["title"]  # a saját cikkek listájában nem szerepel a törölt cím, nincs kész, f"{adatok['title']}? mi az f? contains van?
+        article_list = self.browser.find_elements(By.XPATH, '//a/h1')
+        new_article_list = []
+        for i in article_list:
+            new_article_list.append(i.text)
 
+        # a saját cikkek listájában nem szerepel a törölt cím:
 
-    # 10. Adatok lementésének ellenőrzése:
+        assert not delete_article["title"] in new_article_list
+
+    # 10. Adatok lementésének ellenőrzése - lementett tartalom megegyzik az oldalon lévő tartalommal:
     def test_save_data(self):
         login(self.browser)
 
+        popular_tags = self.browser.find_elements(By.XPATH, '//a[@class="tag-pill tag-default"]')
+        with open('mentett_adatok.csv', 'w', encoding="UTF-8") as file:
+            for tag in popular_tags:
+                file.write(tag.text)
+                file.write("\n")
 
+        tag_list = []
+        with open('mentett_adatok.csv', 'r', encoding="UTF-8") as file_read:
+            csv_reader = csv.reader(file_read, delimiter=',')
+            for tag in csv_reader:
+                tag_list.append(tag)
+
+        assert len(tag_list) > 0
+        assert len(tag_list) == len(popular_tags)
 
     # 11. Kijelentkezés folyamatának ellenőrzése:
     def test_sign_out(self):
         login(self.browser)
 
         logout_btn = self.browser.find_element(By.XPATH, '//a[@active-class="active"]')
-        assert logout_btn.is_enabled()
+        assert logout_btn.is_enabled()  # A 'Kijelentkezés' gomb elérhető, azaz be vagyunk jelentkezve.
         logout_btn.click()
-        # assert not logout_btn.is_enabled()
+
         sign_in_btn = self.browser.find_element(By.LINK_TEXT, 'Sign in')
-        assert sign_in_btn.is_enabled()
+        assert sign_in_btn.is_enabled()  # A 'Bejelentkezés' gomb elérhető azaz ki vagyunk jelentkezve.
