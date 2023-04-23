@@ -137,7 +137,6 @@ class TestConduit(object):
 
         # bejelentkezés után egy tag kiválasztása a Popular Tags listából:
 
-        # tag dictionary?
         mitast_tag = self.browser.find_element(By.XPATH, '//a[@href="#/tag/mitast"]')
         mitast_tag.click()
         time.sleep(2)
