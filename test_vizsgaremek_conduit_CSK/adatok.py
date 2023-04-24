@@ -1,27 +1,27 @@
 user = {
         "name": "Kitti7",
+        "email": "tesztkitti99@teszt.com",
+        "password": "Teszt123"
+}
+
+user2 = {
+        "name": "Módosított Kitti",
         "email": "tesztkitti55@teszt.com",
         "password": "Teszt123"
 }
 
 article = {
-
-        "title": "Újratervezés program 2023",
-        "about": "Struktúraváltó képzések",
-        "words": "A képzések részletei",
-        "tags": "SV"
+        "title": "Cím",
+        "about": "Leírás",
+        "words": "Tartalom",
+        "tags": "Teg"
 }
 
-update_article = {
-
-        "title": "Módosított program 2023",
-        "about": "Módosított képzések",
-        "words": "Módosított részletek",
-        "tags": "SVSV"
+new_comment = {
+        "comment": "Pénteken már több felhő lehet felettünk, a délután második felében nyugaton, északnyugaton, este pedig a keleti országrészben alakulhat ki eső, zápor. "
 }
 
 delete_article = {
-
         "title": "remove",
         "about": "remove",
         "words": "remove",

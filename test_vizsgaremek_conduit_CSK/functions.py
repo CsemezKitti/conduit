@@ -39,3 +39,4 @@ def new_article(browser, article, about, text, tags):
     article_text.send_keys(text)
     article_tags.send_keys(tags)
     publish_article_btn.click()
+    time.sleep(2)

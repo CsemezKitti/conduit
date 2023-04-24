@@ -8,7 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
 
-from adatok import user, article, update_article, delete_article
+from adatok import user, user2, delete_article, new_comment, article
 from functions import login, new_article
 
 
@@ -165,47 +165,64 @@ class TestConduit(object):
 
         assert len(pages) == len(page_number_btns)
 
-    # 6. Új adatbevitel ellenőrzése:
+    # 6. Új adatbevitel ellenőrzése, új komment írása cikkhez:
     def test_new_data(self):
 
         login(self.browser)
+        time.sleep(2)
 
         # gombok, mezők megkeresése, mezők kitöltése:
 
-        new_article_btn = WebDriverWait(self.browser, 2).until(
-            EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
-        time.sleep(4)
-        new_article_btn.click()
-        time.sleep(4)
+        first_article = self.browser.find_elements(By.XPATH, '//span[text()="Read more..."]')[0]  # '//div[@class="article-preview"]'
+        first_article.click()
+        time.sleep(2)
 
-        article_title = WebDriverWait(self.browser, 2).until(
-            EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
-        article_about = self.browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
-        article_words = self.browser.find_element(By.XPATH,
-                                                  '//textarea[@placeholder="Write your article (in markdown)"]')
-        article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
+        comment_input = self.browser.find_element(By.XPATH, '//textarea[@placeholder="Write a comment..."]')
+        comment_input.send_keys(new_comment["comment"])
+
+        post_btn = self.browser.find_element(By.XPATH, '//button[@class="btn btn-sm btn-primary"]')
+        post_btn.click()
+        time.sleep(2)
+
+        comment_text = self.browser.find_elements(By.XPATH, '//p[@class="card-text"]')[1]
+
+        assert comment_text.text == new_comment["comment"]
 
 
-        time.sleep(4)
-        article_title.send_keys(article["title"])
-        time.sleep(4)
-        article_about.send_keys(article["about"])
-        time.sleep(4)
-        article_words.send_keys(article["words"])
-        time.sleep(4)
-        article_tags.send_keys(article["tags"])
-
-        time.sleep(4)
-        publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
-        time.sleep(4)
-        publish_article_btn.click()
-        time.sleep(4)
-
-        # annak ellenőrzése, hogy a felvitt cikk adatai sikeresen elmentődtek - a cikk címe megegyezik a dictionary-ben szereplő címmel:
-
-        new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
-        time.sleep(4)
-        assert new_title.text == article["title"]
+        # new_article_btn = WebDriverWait(self.browser, 2).until(
+        #     EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
+        # time.sleep(4)
+        # new_article_btn.click()
+        # time.sleep(4)
+        #
+        # article_title = WebDriverWait(self.browser, 2).until(
+        #     EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
+        # article_about = self.browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
+        # article_words = self.browser.find_element(By.XPATH,
+        #                                           '//textarea[@placeholder="Write your article (in markdown)"]')
+        # article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
+        #
+        #
+        # time.sleep(4)
+        # article_title.send_keys(article["title"])
+        # time.sleep(4)
+        # article_about.send_keys(article["about"])
+        # time.sleep(4)
+        # article_words.send_keys(article["words"])
+        # time.sleep(4)
+        # article_tags.send_keys(article["tags"])
+        #
+        # time.sleep(4)
+        # publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
+        # time.sleep(4)
+        # publish_article_btn.click()
+        # time.sleep(4)
+        #
+        # # annak ellenőrzése, hogy a felvitt cikk adatai sikeresen elmentődtek - a cikk címe megegyezik a dictionary-ben szereplő címmel:
+        #
+        # new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
+        # time.sleep(4)
+        # assert new_title.text == article["title"]
 
     # 7. Ismételt és sorozatos adatbevitel ellenőrzése adatforrásból:
     def test_file_data(self):
@@ -229,50 +246,45 @@ class TestConduit(object):
 
             assert new_article_title.text in my_title_list
 
-    # 8. Meglévő adat módosításának ellenőrzése:
+    # 8. Meglévő adat módosításának ellenőrzése, felhasználónév módosítása:
     def test_update_data(self):
 
         login(self.browser)
 
-        # gombok, mezők megkeresése, cím módosítása:
+        # gombok, mezők megkeresése, felhasználónév módosítása:
 
-        new_article(self.browser, article["title"], article["about"], article["words"],
-                    article["tags"])  # adatok meghívása
-        time.sleep(4)
-
-        edit_btn = WebDriverWait(self.browser, 2).until(
-            EC.presence_of_element_located((By.XPATH, '//a[@class="btn btn-sm btn-outline-secondary"]')))
-        edit_btn.click()
-        time.sleep(4)
-        article_title = WebDriverWait(self.browser, 2).until(
-            EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
+        setting_btn = self.browser.find_element(By.XPATH, '//a[@href="#/settings"]')
+        setting_btn.click()
         time.sleep(2)
 
-        article_title.clear()
-        time.sleep(4)
-        article_title.send_keys(update_article["title"])
-        time.sleep(4)
-        publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
+        username_input = self.browser.find_element(By.XPATH, '//input[@placeholder="Your username"]')
+        username_input.clear()
+        username_input.send_keys(user2['name'])
 
-        time.sleep(4)
-        publish_article_btn.click()
-        time.sleep(6)
-
-        # annak ellenőrzése, hogy a módosított cím megegyezik az adatokból felvitt eredeti címmel:
-
-        new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
+        update_btn = self.browser.find_element(By.XPATH, '//button[@class="btn btn-lg btn-primary pull-xs-right"]')
+        update_btn.click()
         time.sleep(2)
-        assert new_title.text == update_article["title"]
+
+        confirm_btn = self.browser.find_element(By.XPATH, '//button[@class="swal-button swal-button--confirm"]')
+        confirm_btn.click()
+        time.sleep(2)
+
+        new_name = self.browser.find_elements(By.XPATH, '//a[@class="nav-link"]')[2]
+
+        # annak ellenőrzése, hogy az új név megegyezik az adatokból felvitt új user nevével:
+
+        assert new_name.text == user2['name']
 
     # 9. Adat törlésének ellenőrzése:
     def test_delete_data(self):
 
         login(self.browser)
+        new_article(self.browser, delete_article['title'], delete_article['about'], delete_article['words'],
+                    delete_article['tags'])  # adatok meghívása
 
         # gombok, mezők megkeresése, cikk törlése:
 
-        new_article(self.browser, delete_article['title'], delete_article['about'], delete_article['words'],
-                    delete_article['tags'])  # adatok meghívása
+
         time.sleep(2)
 
         delete_btn = WebDriverWait(self.browser, 2).until(
