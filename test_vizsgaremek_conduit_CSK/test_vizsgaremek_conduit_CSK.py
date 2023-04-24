@@ -18,7 +18,7 @@ class TestConduit(object):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         self.browser = webdriver.Chrome(service=service, options=options)
@@ -26,8 +26,8 @@ class TestConduit(object):
         self.browser.get(URL)
         self.browser.maximize_window()
 
-    def teardown_method(self):
-        self.browser.quit()
+    # def teardown_method(self):
+    #     self.browser.quit()
 
     # 1. Adatkezelési nyilatkozat elfogadásának ellenőrzése:
     def test_cookies(self):
@@ -169,60 +169,60 @@ class TestConduit(object):
     def test_new_data(self):
 
         login(self.browser)
-        time.sleep(2)
-
-        # gombok, mezők megkeresése, mezők kitöltése:
-
-        first_article = self.browser.find_elements(By.XPATH, '//span[text()="Read more..."]')[0]  # '//div[@class="article-preview"]'
-        first_article.click()
-        time.sleep(2)
-
-        comment_input = self.browser.find_element(By.XPATH, '//textarea[@placeholder="Write a comment..."]')
-        comment_input.send_keys(new_comment["comment"])
-
-        post_btn = self.browser.find_element(By.XPATH, '//button[@class="btn btn-sm btn-primary"]')
-        post_btn.click()
-        time.sleep(2)
-
-        comment_text = self.browser.find_elements(By.XPATH, '//p[@class="card-text"]')[1]
-
-        assert comment_text.text == new_comment["comment"]
-
-
-        # new_article_btn = WebDriverWait(self.browser, 2).until(
-        #     EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
-        # time.sleep(4)
-        # new_article_btn.click()
-        # time.sleep(4)
+        # time.sleep(2)
         #
-        # article_title = WebDriverWait(self.browser, 2).until(
-        #     EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
-        # article_about = self.browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
-        # article_words = self.browser.find_element(By.XPATH,
-        #                                           '//textarea[@placeholder="Write your article (in markdown)"]')
-        # article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
+        # # gombok, mezők megkeresése, mezők kitöltése:
         #
+        # first_article = self.browser.find_elements(By.XPATH, '//span')[0]  # '//div[@class="article-preview"]'
+        # first_article.click() # nam kattintható
+        # time.sleep(2)
         #
-        # time.sleep(4)
-        # article_title.send_keys(article["title"])
-        # time.sleep(4)
-        # article_about.send_keys(article["about"])
-        # time.sleep(4)
-        # article_words.send_keys(article["words"])
-        # time.sleep(4)
-        # article_tags.send_keys(article["tags"])
+        # comment_input = self.browser.find_element(By.XPATH, '//textarea[@placeholder="Write a comment..."]')
+        # comment_input.send_keys(new_comment["comment"])
         #
-        # time.sleep(4)
-        # publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
-        # time.sleep(4)
-        # publish_article_btn.click()
-        # time.sleep(4)
+        # post_btn = self.browser.find_element(By.XPATH, '//button[@class="btn btn-sm btn-primary"]')
+        # post_btn.click()
+        # time.sleep(2)
         #
-        # # annak ellenőrzése, hogy a felvitt cikk adatai sikeresen elmentődtek - a cikk címe megegyezik a dictionary-ben szereplő címmel:
+        # comment_text = self.browser.find_elements(By.XPATH, '//p[@class="card-text"]')[1]
         #
-        # new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
-        # time.sleep(4)
-        # assert new_title.text == article["title"]
+        # assert comment_text.text == new_comment["comment"]
+
+
+        new_article_btn = WebDriverWait(self.browser, 2).until(
+            EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
+        time.sleep(4)
+        new_article_btn.click()
+        time.sleep(4)
+
+        article_title = WebDriverWait(self.browser, 2).until(
+            EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
+        article_about = self.browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
+        article_words = self.browser.find_element(By.XPATH,
+                                                  '//textarea[@placeholder="Write your article (in markdown)"]')
+        article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
+
+
+        time.sleep(4)
+        article_title.send_keys(article["title"])
+        time.sleep(4)
+        article_about.send_keys(article["about"])
+        time.sleep(4)
+        article_words.send_keys(article["words"])
+        time.sleep(4)
+        article_tags.send_keys(article["tags"])
+
+        time.sleep(4)
+        publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
+        time.sleep(4)
+        publish_article_btn.click()
+        time.sleep(4)
+
+        # annak ellenőrzése, hogy a felvitt cikk adatai sikeresen elmentődtek - a cikk címe megegyezik a dictionary-ben szereplő címmel:
+
+        new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
+        time.sleep(4)
+        assert new_title.text == article["title"]
 
     # 7. Ismételt és sorozatos adatbevitel ellenőrzése adatforrásból:
     def test_file_data(self):

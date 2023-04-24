@@ -1,7 +1,7 @@
 user = {
-        "name": "Kitti7",
-        "email": "tesztkitti99@teszt.com",
-        "password": "Teszt123"
+        "name": "Kitti2023",
+        "email": "teszt11@teszt.hu",
+        "password": "Teszt1231"
 }
 
 user2 = {
