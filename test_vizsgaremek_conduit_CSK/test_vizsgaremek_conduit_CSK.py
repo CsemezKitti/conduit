@@ -18,7 +18,7 @@ class TestConduit(object):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
         options.add_experimental_option("detach", True)
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         self.browser = webdriver.Chrome(service=service, options=options)
@@ -26,8 +26,8 @@ class TestConduit(object):
         self.browser.get(URL)
         self.browser.maximize_window()
 
-    # def teardown_method(self):
-    #     self.browser.quit()
+    def teardown_method(self):
+        self.browser.quit()
 
     # 1. Adatkezelési nyilatkozat elfogadásának ellenőrzése:
     def test_cookies(self):
