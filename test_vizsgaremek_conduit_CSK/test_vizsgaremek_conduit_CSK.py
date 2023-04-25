@@ -260,7 +260,6 @@ class TestConduit(object):
 
         # gombok, mezők megkeresése, cikk törlése:
 
-
         time.sleep(2)
 
         delete_btn = WebDriverWait(self.browser, 2).until(
@@ -309,10 +308,13 @@ class TestConduit(object):
         login(self.browser)
 
         # gombok megkeresése:
+        # A 'Kijelentkezés' gomb elérhető, azaz be vagyunk jelentkezve:
 
         logout_btn = self.browser.find_element(By.XPATH, '//a[@active-class="active"]')
-        assert logout_btn.is_enabled()  # A 'Kijelentkezés' gomb elérhető, azaz be vagyunk jelentkezve.
+        assert logout_btn.is_enabled()
         logout_btn.click()
 
+        # A 'Bejelentkezés' gomb elérhető azaz ki vagyunk jelentkezve:
+
         sign_in_btn = self.browser.find_element(By.LINK_TEXT, 'Sign in')
-        assert sign_in_btn.is_enabled()  # A 'Bejelentkezés' gomb elérhető azaz ki vagyunk jelentkezve.
+        assert sign_in_btn.is_enabled()

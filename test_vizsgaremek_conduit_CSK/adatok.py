@@ -17,10 +17,6 @@ article = {
         "tags": "Teg"
 }
 
-new_comment = {
-        "comment": "Pénteken már több felhő lehet felettünk, a délután második felében nyugaton, északnyugaton, este pedig a keleti országrészben alakulhat ki eső, zápor. "
-}
-
 delete_article = {
         "title": "remove",
         "about": "remove",
